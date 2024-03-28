@@ -1,0 +1,13 @@
+* {
+  margin: 0;
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background-color: darkgray;
+  overflow: hidden;
+  text-align: center;
+}
+#canvas {
+  background-color: lightgray;
+}
