@@ -26,14 +26,13 @@ export class Car {
         fourth is height
         of rectangle
     */
-    console.log(JSON.stringify(this.controls));
     ctx.rect(-this.width / 2, -this.height / 2, this.width, this.height);
     ctx.fill();
     ctx.restore();
   }
 
-  //   update the car
-  update() {
+  //   move the car
+  #move() {
     // set speed  for forward direction
     if (this.controls.forward) {
       this.speed += this.acceleration;
@@ -69,16 +68,24 @@ export class Car {
     }
     // move car by a speed in up direction
 
-    // move horizontal car by a speed in
-    if (this.controls.left && this.speed !== 0) {
-      this.angle += 0.03;
-    }
-    if (this.controls.right && this.speed !== 0) {
-      this.angle -= 0.03;
+    // fix backward issue
+    if (this.speed !== 0) {
+      const flip = this.speed > 0 ? 1 : -1;
+
+      // move horizontal car by a speed in
+      if (this.controls.left * flip) {
+        this.angle += 0.03;
+      }
+      if (this.controls.right * flip) {
+        this.angle -= 0.03;
+      }
     }
 
     this.x -= Math.sin(this.angle) * this.speed;
     this.y -= Math.cos(this.angle) * this.speed;
-    // this.y -= this.speed;
+  }
+  //   update the car
+  update() {
+    this.#move();
   }
 }
