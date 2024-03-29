@@ -7,7 +7,7 @@ export class Road {
     this.laneCount = laneCount;
     this.left = x - width / 2;
     this.right = x + width / 2;
-    const infinity = 100000000;
+    const infinity = 10000000;
     this.top = -infinity;
     this.bottom = infinity;
     const topLeft = { x: this.left, y: this.top };
@@ -33,13 +33,16 @@ export class Road {
     ctx.strokeStyle = "yellow";
     for (let i = 1; i <= this.laneCount - 1; i++) {
       const x = linearInterpolataion(this.left, this.right, i / this.laneCount);
-      // ctx.setLineDash([]);
+
       ctx.strokeStyle = "white";
       ctx.beginPath();
+      ctx.setLineDash([20, 20]);
       ctx.moveTo(x, this.top);
       ctx.lineTo(x, this.bottom);
       ctx.stroke();
     }
+
+    ctx.setLineDash([]);
     this.borders.forEach((border) => {
       ctx.strokeStyle = "yellow";
       ctx.beginPath();
