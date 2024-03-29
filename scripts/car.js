@@ -19,19 +19,25 @@ export class Car {
 
   draw(ctx) {
     ctx.beginPath();
-    ctx.save();
-    ctx.translate(this.x, this.y);
-    ctx.rotate(-this.angle);
-    /*
-        first is x position
-        second is y position
-        third is width 
-        fourth is height
-        of rectangle
-    */
-    ctx.rect(-this.width / 2, -this.height / 2, this.width, this.height);
+    const polygon = this.#createPolygon();
+    polygon[0].x;
+    ctx.moveTo(polygon[0].x, polygon[0].y);
+    for (let i = 1; i < polygon.length; i++) {
+      ctx.lineTo(polygon[i].x, polygon[i].y);
+    }
     ctx.fill();
-    ctx.restore();
+    // ctx.save();
+    // ctx.translate(this.x, this.y);
+    // ctx.rotate(-this.angle);
+    // /*
+    //     first is x position
+    //     second is y position
+    //     third is width
+    //     fourth is height
+    //     of rectangle
+    // */
+    // ctx.rect(-this.width / 2, -this.height / 2, this.width, this.height);
+    // ctx.restore();
     this.sensor.draw(ctx);
   }
 
@@ -88,6 +94,33 @@ export class Car {
     this.x -= Math.sin(this.angle) * this.speed;
     this.y -= Math.cos(this.angle) * this.speed;
   }
+  #createPolygon() {
+    let points = [];
+    const radius = Math.hypot(this.width, this.height) / 2;
+    const alpha = Math.atan2(this.width, this.height);
+    points.push({
+      x: this.x - Math.sin(this.angle - alpha) * radius,
+      y: this.y - Math.cos(this.angle - alpha) * radius,
+    });
+    points.push({
+      x: this.x - Math.sin(this.angle + alpha) * radius,
+      y: this.y - Math.cos(this.angle + alpha) * radius,
+    });
+    points.push({
+      x: this.x - Math.sin(Math.PI + this.angle - alpha) * radius,
+      y: this.y - Math.cos(Math.PI + this.angle - alpha) * radius,
+    });
+    points.push({
+      x: this.x - Math.sin(Math.PI + this.angle + alpha) * radius,
+      y: this.y - Math.cos(Math.PI + this.angle + alpha) * radius,
+    });
+
+    // x: this.x - Math.sin(Math.PI + this.angle - alpha) * radius,
+    // y: this.y - Math.cos(Math.PI + this.angle - alpha) * radius,
+    return points;
+  }
+
+  // create polygon
   //   update the car
 
   update(roadBorders) {
