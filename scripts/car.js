@@ -1,6 +1,7 @@
 import { Controls } from "./controls.js";
 import { Road } from "./road.js";
 import { Sensor } from "./sensor.js";
+import { polysIntersect } from "./utils.js";
 
 export class Car {
   constructor(x, y, width, height) {
@@ -21,8 +22,12 @@ export class Car {
 
   // car draw method
   draw(ctx) {
+    if (this.damaged) {
+      ctx.fillStyle = "red";
+    } else {
+      ctx.fillStyle = "black";
+    }
     ctx.beginPath();
-
     this.polygon[0].x;
     ctx.moveTo(this.polygon[0].x, this.polygon[0].y);
     for (let i = 1; i < this.polygon.length; i++) {
@@ -111,7 +116,13 @@ export class Car {
   }
   #assessedDamaged(roadBorders) {
     for (let i = 0; i < roadBorders.length; i++) {
-      if (polyIntersect(this.polygon, roadBorders[i])) {
+      // console.log(polysIntersect(this.polygon, roadBorders[i]));
+      if (
+        polysIntersect(this.polygon, [
+          roadBorders[i].top,
+          roadBorders[i].bottom,
+        ])
+      ) {
         return true;
       }
     }
@@ -120,8 +131,11 @@ export class Car {
 
   //   update the car
   update(roadBorders) {
-    this.#move();
+    if (!this.damaged) {
+      this.#move();
+      this.polygon = this.#createPolygon();
+      this.damaged = this.#assessedDamaged(roadBorders);
+    }
     this.sensor.update(roadBorders);
-    this.polygon = this.#createPolygon();
   }
 }

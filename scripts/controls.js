@@ -13,7 +13,6 @@ export class Controls {
 
   #keyboardListener() {
     document.addEventListener("keydown", (e) => {
-      console.log(this);
       switch (e.key) {
         case "ArrowUp":
           this.forward = true;
