@@ -11,33 +11,24 @@ export class Car {
     this.controls = new Controls(this.update);
     this.speed = 0;
     this.acceleration = 0.2;
-    this.maxSpeed = 4;
+    this.maxSpeed = 5;
     this.friction = 0.05;
     this.angle = 0;
     this.sensor = new Sensor(this);
+    this.polygon = [];
+    this.damaged = false;
   }
 
+  // car draw method
   draw(ctx) {
     ctx.beginPath();
-    const polygon = this.#createPolygon();
-    polygon[0].x;
-    ctx.moveTo(polygon[0].x, polygon[0].y);
-    for (let i = 1; i < polygon.length; i++) {
-      ctx.lineTo(polygon[i].x, polygon[i].y);
+
+    this.polygon[0].x;
+    ctx.moveTo(this.polygon[0].x, this.polygon[0].y);
+    for (let i = 1; i < this.polygon.length; i++) {
+      ctx.lineTo(this.polygon[i].x, this.polygon[i].y);
     }
     ctx.fill();
-    // ctx.save();
-    // ctx.translate(this.x, this.y);
-    // ctx.rotate(-this.angle);
-    // /*
-    //     first is x position
-    //     second is y position
-    //     third is width
-    //     fourth is height
-    //     of rectangle
-    // */
-    // ctx.rect(-this.width / 2, -this.height / 2, this.width, this.height);
-    // ctx.restore();
     this.sensor.draw(ctx);
   }
 
@@ -94,6 +85,7 @@ export class Car {
     this.x -= Math.sin(this.angle) * this.speed;
     this.y -= Math.cos(this.angle) * this.speed;
   }
+  // create polygon
   #createPolygon() {
     let points = [];
     const radius = Math.hypot(this.width, this.height) / 2;
@@ -115,16 +107,21 @@ export class Car {
       y: this.y - Math.cos(Math.PI + this.angle + alpha) * radius,
     });
 
-    // x: this.x - Math.sin(Math.PI + this.angle - alpha) * radius,
-    // y: this.y - Math.cos(Math.PI + this.angle - alpha) * radius,
     return points;
   }
+  #assessedDamaged(roadBorders) {
+    for (let i = 0; i < roadBorders.length; i++) {
+      if (polyIntersect(this.polygon, roadBorders[i])) {
+        return true;
+      }
+    }
+    return false;
+  }
 
-  // create polygon
   //   update the car
-
   update(roadBorders) {
     this.#move();
     this.sensor.update(roadBorders);
+    this.polygon = this.#createPolygon();
   }
 }

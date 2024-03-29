@@ -29,7 +29,9 @@ export class Sensor {
   }
   #getReadings(ray, roadBorders) {
     const touches = [];
-    roadBorders.forEach((border) => {
+    for (let j = 0; j < roadBorders.length; j++) {
+      const border = roadBorders[j];
+
       const touch = getIntersection(
         ray.start,
         ray.end,
@@ -39,7 +41,7 @@ export class Sensor {
       if (touch) {
         touches.push(touch);
       }
-    });
+    }
     if (touches.length === 0) {
       return null;
     } else {
@@ -50,15 +52,13 @@ export class Sensor {
   }
   update(roadBorders) {
     this.#castRays();
-    this.readings = [];
-    this.rays.forEach((ray) => {
-      //   console.log(this.#getReadings(ray, roadBorders));
-      this.readings.push(this.#getReadings(ray, roadBorders));
-    });
+    this.readings = this.rays.map((ray) => this.#getReadings(ray, roadBorders));
   }
 
   draw(ctx) {
-    this.rays.forEach((ray, i) => {
+    for (let i = 0; i < this.rays.length; i++) {
+      const ray = this.rays[i];
+
       let end = ray.end;
       if (this.readings[i]) {
         end = this.readings[i];
@@ -75,6 +75,6 @@ export class Sensor {
       ctx.moveTo(end.x, end.y);
       ctx.lineTo(ray.end.x, ray.end.y);
       ctx.stroke();
-    });
+    }
   }
 }

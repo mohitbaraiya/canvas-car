@@ -43,12 +43,13 @@ export class Road {
     }
 
     ctx.setLineDash([]);
-    this.borders.forEach((border) => {
+    for (let i = 0; i < this.borders.length; i++) {
+      const border = this.borders[i];
       ctx.strokeStyle = "yellow";
       ctx.beginPath();
       ctx.moveTo(border.top.x, border.top.y);
       ctx.lineTo(border.bottom.x, border.bottom.y);
       ctx.stroke();
-    });
+    }
   }
 }
