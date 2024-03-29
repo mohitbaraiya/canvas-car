@@ -4,20 +4,25 @@ import { Sensor } from "./sensor.js";
 import { polysIntersect } from "./utils.js";
 
 export class Car {
-  constructor(x, y, width, height) {
+  constructor(x, y, width, height, options = { maxSpeed: 5, type: "KEYS" }) {
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
-    this.controls = new Controls(this.update);
     this.speed = 0;
     this.acceleration = 0.2;
-    this.maxSpeed = 5;
+    this.maxSpeed = options.maxSpeed || 5;
     this.friction = 0.05;
     this.angle = 0;
-    this.sensor = new Sensor(this);
     this.polygon = [];
     this.damaged = false;
+    this.polygon = this.#createPolygon();
+    this.type = options.type;
+    this.controls = new Controls(this.type);
+
+    if (this.type === "KEYS") {
+      this.sensor = new Sensor(this);
+    }
   }
 
   // car draw method
@@ -34,7 +39,7 @@ export class Car {
       ctx.lineTo(this.polygon[i].x, this.polygon[i].y);
     }
     ctx.fill();
-    this.sensor.draw(ctx);
+    this.sensor && this.sensor.draw(ctx);
   }
 
   //   move the car
@@ -134,8 +139,9 @@ export class Car {
     if (!this.damaged) {
       this.#move();
       this.polygon = this.#createPolygon();
+
       this.damaged = this.#assessedDamaged(roadBorders);
     }
-    this.sensor.update(roadBorders);
+    this.sensor && this.sensor.update(roadBorders);
   }
 }

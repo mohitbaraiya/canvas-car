@@ -3,12 +3,19 @@ export class Controls {
   reverse = false;
   right = false;
   left = false;
-  constructor() {
+  constructor(type) {
     this.forward = false;
     this.reverse = false;
     this.right = false;
     this.left = false;
-    this.#keyboardListener();
+    switch (type) {
+      case "KEYS":
+        this.#keyboardListener();
+        break;
+      case "DUMMY":
+        this.forward = true;
+        break;
+    }
   }
 
   #keyboardListener() {
