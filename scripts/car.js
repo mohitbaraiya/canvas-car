@@ -1,4 +1,6 @@
 import { Controls } from "./controls.js";
+import { Road } from "./road.js";
+import { Sensor } from "./sensor.js";
 
 export class Car {
   constructor(x, y, width, height) {
@@ -9,9 +11,10 @@ export class Car {
     this.controls = new Controls(this.update);
     this.speed = 0;
     this.acceleration = 0.2;
-    this.maxSpeed = 3;
+    this.maxSpeed = 4;
     this.friction = 0.05;
     this.angle = 0;
+    this.sensor = new Sensor(this);
   }
 
   draw(ctx) {
@@ -29,6 +32,7 @@ export class Car {
     ctx.rect(-this.width / 2, -this.height / 2, this.width, this.height);
     ctx.fill();
     ctx.restore();
+    this.sensor.draw(ctx);
   }
 
   //   move the car
@@ -85,7 +89,9 @@ export class Car {
     this.y -= Math.cos(this.angle) * this.speed;
   }
   //   update the car
-  update() {
+
+  update(roadBorders) {
     this.#move();
+    this.sensor.update(roadBorders);
   }
 }

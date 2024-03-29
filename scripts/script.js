@@ -10,7 +10,7 @@ function animate() {
   canvas.height = window.innerHeight;
   ctx.save();
   ctx.translate(0, -car.y + canvas.height * 0.8);
-  car.update();
+  car.update(road.borders);
   road.draw(ctx);
   car.draw(ctx);
   ctx.restore();
