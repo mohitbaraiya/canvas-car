@@ -119,7 +119,7 @@ export class Car {
 
     return points;
   }
-  #assessedDamaged(roadBorders) {
+  #assessedDamaged(roadBorders, traffic) {
     for (let i = 0; i < roadBorders.length; i++) {
       // console.log(polysIntersect(this.polygon, roadBorders[i]));
       if (
@@ -131,17 +131,23 @@ export class Car {
         return true;
       }
     }
+
+    // assess traffic damage
+    for (let i = 0; i < traffic.length; i++) {
+      if (polysIntersect(this.polygon, traffic[i].polygon)) {
+        return true;
+      }
+    }
     return false;
   }
 
   //   update the car
-  update(roadBorders) {
+  update(roadBorders, traffic) {
     if (!this.damaged) {
       this.#move();
       this.polygon = this.#createPolygon();
-
-      this.damaged = this.#assessedDamaged(roadBorders);
+      this.damaged = this.#assessedDamaged(roadBorders, traffic);
     }
-    this.sensor && this.sensor.update(roadBorders);
+    this.sensor && this.sensor.update(roadBorders, traffic);
   }
 }
